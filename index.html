@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LivroPronto.app.br - Publicação e Diagramação Inteligente</title>
+    <style>
+        :root {
+            --primary-color: #0f172a;
+            --accent-color: #2563eb;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-main: #334155;
+            --success-color: #16a34a;
+            --pix-color: #0d9488;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 820px;
+            background: var(--card-bg);
+            padding: 35px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            font-size: 26px;
+            color: var(--primary-color);
+            margin: 0 0 6px 0;
+        }
+
+        header p {
+            color: #64748b;
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* BARRA DE PROGRESSO */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+            gap: 8px;
+        }
+
+        .step-item {
+            font-size: 13px;
+            font-weight: 600;
+            color: #94a3b8;
+            flex: 1;
+            text-align: center;
+            padding: 6px 4px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .step-item.active {
+            color: var(--accent-color);
+            background-color: #eff6ff;
+        }
+
+        .step-item.completed {
+            color: var(--success-color);
+        }
+
+        /* CONTROLE DE ETAPAS */
+        .step-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .step-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* CAIXAS E FORMULÁRIOS */
+        .section-box {
+            margin-bottom: 22px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fff;
+            transition: opacity 0.3s;
+        }
+
+        .section-box.disabled {
+            opacity: 0.5;
+            background-color: #f8fafc;
+            pointer-events: none;
+        }
+
+        .section-box h3 {
+            font-size: 16px;
+            margin-top: 0;
+            margin-bottom: 14px;
+            color: var(--primary-color);
+        }
+
+        label.radio-label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        input[type="radio"], input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        select, input[type="number"], input[type="text"], textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ALERTAS E PONTES */
+        .alert-box {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .ai-bridge {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+            padding: 16px;
+            border-radius: 6px;
+            margin-top: 12px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .ai-bridge a {
+            color: #2563eb;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        /* LOMBADA E PREVIEW FONTE */
+        .lombada-info {
+            background-color: #f1f5f9;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #1e293b;
+            text-align: center;
+        }
+
+        .preview-box {
+            padding: 16px;
+            border: 1px dashed #cbd5e1;
+            border-radius: 6px;
+            background-color: #fafafa;
+            margin-top: 8px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        /* ADD-ONS E TUTORIAIS */
+        .addon-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .addon-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .addon-price {
+            font-weight: bold;
+            color: var(--success-color);
+            font-size: 15px;
+            white-space: nowrap;
+        }
+
+        .addon-desc {
+            font-size: 13px;
+            color: #64748b;
+            margin: 8px 0 12px 24px;
+            line-height: 1.4;
+        }
+
+        .diy-bar {
+            margin-left: 24px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-tutorial {
+            background-color: #eff6ff;
+            color: var(--accent-color);
+            border: 1px solid #bfdbfe;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-tutorial:hover {
+            background-color: #dbeafe;
+        }
+
+        .total-bar {
+            background-color: #1e293b;
+            color: #ffffff;
+            padding: 18px 24px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .total-bar strong {
+            font-size: 22px;
+            color: #4ade80;
+        }
+
+        /* ETAPA 4: GRID 3D E PIX */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .grid-layout { grid-template-columns: 1fr; }
+            .container { padding: 24px 20px; }
+        }
+
+        .stage-3d {
+            background: radial-gradient(circle at center, #e2e8f0 0%, #cbd5e1 100%);
+            border-radius: 10px;
+            padding: 35px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            perspective: 1200px;
+            min-height: 340px;
+        }
+
+        .book-3d {
+            width: 170px;
+            height: 255px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateY(-28deg) rotateX(6deg);
+            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .book-face {
+            position: absolute;
+            backface-visibility: hidden;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.15);
+        }
+
+        .book-front {
+            width: 170px;
+            height: 255px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            transform: translateZ(13px);
+            border-radius: 2px 6px 6px 2px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 22px 16px;
+            box-sizing: border-box;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .book-front h2 {
+            font-size: 17px;
+            margin: 0;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .book-front span {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+        }
+
+        .book-spine {
+            width: 26px;
+            height: 255px;
+            background: #0f172a;
+            color: #f8fafc;
+            transform: rotateY(-90deg) translateZ(13px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            writing-mode: vertical-rl;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .book-back {
+            width: 170px;
+            height: 255px;
+            background: #1e293b;
+            color: #e2e8f0;
+            transform: rotateY(180deg) translateZ(13px);
+            border-radius: 6px 2px 2px 6px;
+            padding: 18px 14px;
+            box-sizing: border-box;
+            font-size: 10px;
+            line-height: 1.4;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .barcode-box {
+            background: white;
+            color: black;
+            padding: 5px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 8px;
+            border-radius: 2px;
+            width: 85px;
+            align-self: flex-end;
+        }
+
+        .book-pages {
+            width: 24px;
+            height: 249px;
+            top: 3px;
+            background: repeating-linear-gradient(90deg, #f8fafc 0px, #e2e8f0 2px, #f8fafc 4px);
+            transform: rotateY(90deg) translateZ(157px);
+        }
+
+        .controls-3d {
+            display: flex;
+            gap: 6px;
+            margin-top: 22px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-view {
+            background: white;
+            border: 1px solid #94a3b8;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #1e293b;
+        }
+
+        .dpi-status {
+            font-size: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            margin-top: 8px;
+        }
+
+        .dpi-status.warning {
+            background-color: #fef3c7;
+            border-color: #fde68a;
+            color: #92400e;
+        }
+
+        .pix-box {
+            background-color: #f0fdfa;
+            border: 1px solid #99f6e4;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .pix-value {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--pix-color);
+            margin: 6px 0;
+        }
+
+        .pix-code-input {
+            width: 100%;
+            padding: 9px;
+            font-size: 12px;
+            font-family: monospace;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: white;
+            margin-top: 10px;
+            color: #0f766e;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* BOTÕES DE NAVEGAÇÃO */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .btn-primary {
+            flex: 2;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            background-color: #e2e8f0;
+            color: #334155;
+            border: none;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        .btn-pix {
+            width: 100%;
+            background-color: var(--pix-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-whatsapp {
+            display: block;
+            width: 100%;
+            background-color: #16a34a;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            margin-top: 14px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>LivroPronto.app.br</h1>
+        <p>Automatização inteligente e enxuta para publicação de livros</p>
+    </header>
+
+    <!-- INDICADOR DE ETAPAS -->
+    <div class="stepper">
+        <div class="step-item active" id="ind-step-1">1. Início</div>
+        <div class="step-item" id="ind-step-2">2. Design & Papel</div>
+        <div class="step-item" id="ind-step-3">3. Serviços</div>
+        <div class="step-item" id="ind-step-4">4. 3D & Pix</div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- ETAPA 1: FUNIL INICIAL                                                -->
+    <!-- ===================================================================== -->
+    <div id="step-1" class="step-section active">
+        <div class="section-box">
+            <h3>1. O seu livro já está escrito?</h3>
+            <label class="radio-label">
+                <input type="radio" name="statusLivro" value="sim" checked onclick="tratarStatusLivro()"> 
+                Sim, já tenho o texto pronto (.docx ou digitação)
+            </label>
+            <label class="radio-label">
+                <input type="radio" name="statusLivro" value="nao" onclick="tratarStatusLivro()"> 
+                Não, ainda não tenho o texto
+            </label>
+            <label class="radio-label">
+                <input type="radio" name="statusLivro" value="escrevendo" onclick="tratarStatusLivro()"> 
+                Ainda estou escrevendo
+            </label>
+
+            <div id="aiBridgeContainer" class="ai-bridge hidden">
+                🤖 Perfeito! Para tirar suas ideias do papel, estruturar capítulos e escrever com qualidade profissional, conte com o nosso parceiro de inteligência artificial. 
+                <br><br>
+                <a href="https://gemini.google.com" target="_blank">Clique aqui para começar a criar sua obra com o Gemini &rarr;</a>
+            </div>
+        </div>
+
+        <div class="section-box" id="blocoObjetivo">
+            <h3>2. Qual é o objetivo deste livro?</h3>
+            <label class="radio-label">
+                <input type="radio" name="objetivo" value="comercial" checked onclick="tratarObjetivo()"> 
+                <strong>Uso Comercial</strong> (Quero vender, distribuir em livrarias, Clube de Autores, UICLAP ou Amazon)
+            </label>
+            <label class="radio-label">
+                <input type="radio" name="objetivo" value="pessoal" onclick="tratarObjetivo()"> 
+                <strong>Uso Pessoal / Particular</strong> (Impressão particular, lembrança de família, circulação restrita)
+            </label>
+
+            <div id="avisoPessoalStep1" class="alert-box hidden">
+                💡 Nota: Para livros de <strong>Uso Pessoal</strong>, as exigências burocráticas de mercado (ISBN, Código de Barras e Ficha Catalográfica) são dispensadas e desativadas automaticamente nas próximas etapas.
+            </div>
+        </div>
+
+        <div class="section-box" id="blocoEntrada">
+            <h3>3. Como você quer inserir o seu texto?</h3>
+            <label class="radio-label">
+                <input type="radio" name="tipoEntrada" value="docx" checked onclick="tratarEntrada()"> 
+                Fazer upload de arquivo Word (.docx)
+            </label>
+            <label class="radio-label">
+                <input type="radio" name="tipoEntrada" value="direto" onclick="tratarEntrada()"> 
+                Digitar ou colar o texto diretamente no app
+            </label>
+
+            <div id="uploadContainer" style="margin-top: 10px;">
+                <input type="file" id="arquivoDocx" accept=".docx">
+            </div>
+
+            <div id="editorContainer" class="hidden" style="margin-top: 10px;">
+                <textarea id="textoDireto" rows="5" placeholder="Cole ou digite os capítulos do seu livro aqui..."></textarea>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button type="button" class="btn-primary" onclick="irParaEtapa(2)">Avançar para Design e Papel &rarr;</button>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- ETAPA 2: DESIGN, PAPEL, LOMBADA E FONTES                              -->
+    <!-- ===================================================================== -->
+    <div id="step-2" class="step-section">
+        <div class="section-box">
+            <h3>1. Formato Físico e Tipo de Papel</h3>
+            
+            <label for="formatoLivro">Tamanho do Livro:</label>
+            <select id="formatoLivro">
+                <option value="14x21 cm">14 x 21 cm (Padrão / Romances)</option>
+                <option value="16x23 cm">16 x 23 cm (Não-ficção / Acadêmico)</option>
+                <option value="15x21 cm">15 x 21 cm (A5)</option>
+            </select>
+
+            <label for="tipoPapel">Tipo de Papel:</label>
+            <select id="tipoPapel" onchange="calcularLombada()">
+                <option value="polen80">Pólen Bold 80g (Marfim - Mais confortável para leitura)</option>
+                <option value="offset75">Offset 75g (Branco - Econômico)</option>
+                <option value="offset90">Offset 90g (Branco - Encorpado)</option>
+            </select>
+
+            <label for="qtdPaginas">Número Total de Páginas Estimado:</label>
+            <input type="number" id="qtdPaginas" value="150" min="20" max="1000" oninput="calcularLombada()">
+
+            <div class="lombada-info" id="resultadoLombada">
+                Espessura da Lombada Calculada: 9.0 mm
+            </div>
+        </div>
+
+        <div class="section-box">
+            <h3>2. Escolha e Prévia da Fonte (Tipografia)</h3>
+            
+            <label for="familiaFonte">Família da Fonte:</label>
+            <select id="familiaFonte" onchange="atualizarPreviewFonte()">
+                <option value="Georgia, serif">Georgia (Com serifa - Clássica e Elegante)</option>
+                <option value="'Times New Roman', serif">Times New Roman (Com serifa - Tradicional)</option>
+                <option value="Arial, sans-serif">Arial (Sem serifa - Moderna e Limpa)</option>
+                <option value="'Courier New', monospace">Courier New (Monoespacial - Estilo Máquina)</option>
+            </select>
+
+            <label>Prévia de Visualização em Tempo Real:</label>
+            <div id="previewTexto" class="preview-box" style="font-family: Georgia, serif;">
+                "O sucesso não é o final, o fracasso não é fatal: o que conta é a coragem de continuar." Esta é uma prévia de como o texto do seu miolo vai se comportar com a entrelinha ajustada.
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button type="button" class="btn-secondary" onclick="irParaEtapa(1)">&larr; Voltar</button>
+            <button type="button" class="btn-primary" onclick="irParaEtapa(3)">Avançar para Serviços &rarr;</button>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- ETAPA 3: ADD-ONS E TUTORIAIS                                          -->
+    <!-- ===================================================================== -->
+    <div id="step-3" class="step-section">
+        <div id="avisoBloqueioStep3" class="alert-box hidden">
+            ⚠️ <strong>Modo Uso Pessoal ativo:</strong> Como você escolheu circulação particular na Etapa 1, os itens burocráticos (Ficha Catalográfica, ISBN e Código de Barras) foram desabilitados automaticamente para você economizar.
+        </div>
+
+        <div class="section-box">
+            <div class="addon-header">
+                <label class="addon-title">
+                    <input type="checkbox" checked disabled> 
+                    Diagramação Automática do Miolo (Motor Typst)
+                </label>
+                <span class="addon-price">R$ 49,90</span>
+            </div>
+            <p class="addon-desc">
+                Formatação profissional completa, margens espelhadas, numeração de páginas e arquivo PDF/X pronto para gráfica.
+            </p>
+            <div style="margin-left: 24px; margin-top: 8px;">
+                <label style="font-size: 13px; cursor: pointer; font-weight: 600; color: var(--accent-color);">
+                    <input type="checkbox" id="chkSumario" checked> 
+                    Gerar Índice / Sumário Automático com paginação exata
+                </label>
+            </div>
+        </div>
+
+        <div class="section-box" id="boxCapa">
+            <div class="addon-header">
+                <label class="addon-title">
+                    <input type="checkbox" class="addon-check" data-nome="Capa Completa" data-preco="120.00" onchange="calcularTotal()"> 
+                    Criação de Capa Completa (Frente, Lombada e Contracapa)
+                </label>
+                <span class="addon-price">+ R$ 120,00</span>
+            </div>
+            <p class="addon-desc">
+                Arte exclusiva desenvolvida por designer editorial com a medida exata da sua lombada e fechamento em 300 DPI.
+            </p>
+            <div class="diy-bar">
+                <span>Prefere fazer você mesmo ou já tem a arte?</span>
+                <button type="button" class="btn-tutorial" onclick="abrirTutorial('capa')">▶ Ver Vídeo Tutorial Gratuito</button>
+            </div>
+        </div>
+
+        <div class="section-box comercial-only" id="boxFicha">
+            <div class="addon-header">
+                <label class="addon-title">
+                    <input type="checkbox" class="addon-check" data-nome="Ficha Catalográfica" data-preco="65.00" onchange="calcularTotal()"> 
+                    Emissão de Ficha Catalográfica Oficial
+                </label>
+                <span class="addon-price">+ R$ 65,00</span>
+            </div>
+            <p class="addon-desc">
+                Elaborada por bibliotecário credenciado (CRB) e inserida no verso da folha de rosto conforme normas da ABNT.
+            </p>
+            <div class="diy-bar">
+                <span>Quer tentar gerar por conta própria?</span>
+                <button type="button" class="btn-tutorial" onclick="abrirTutorial('ficha')">▶ Ver Vídeo Tutorial Gratuito</button>
+            </div>
+        </div>
+
+        <div class="section-box comercial-only" id="boxIsbn">
+            <div class="addon-header">
+                <label class="addon-title">
+                    <input type="checkbox" class="addon-check" data-nome="ISBN + Código de Barras" data-preco="55.00" onchange="calcularTotal()"> 
+                    Registro de ISBN + Geração de Código de Barras
+                </label>
+                <span class="addon-price">+ R$ 55,00</span>
+            </div>
+            <p class="addon-desc">
+                Assessoria completa junto à Câmara Brasileira do Livro (CBL) e aplicação do código de barras vetorial na contracapa.
+            </p>
+            <div class="diy-bar">
+                <span>Quer solicitar direto na CBL sem intermediários?</span>
+                <button type="button" class="btn-tutorial" onclick="abrirTutorial('isbn')">▶ Ver Vídeo Tutorial Gratuito</button>
+            </div>
+        </div>
+
+        <div class="total-bar">
+            <div>
+                <span style="font-size: 14px; color: #cbd5e1;">Investimento Total do Projeto</span><br>
+                <small style="color: #94a3b8;">Pagamento único via Pix • Sem mensalidades</small>
+            </div>
+            <strong id="valorTotalStep3">R$ 49,90</strong>
+        </div>
+
+        <div class="nav-buttons">
+            <button type="button" class="btn-secondary" onclick="irParaEtapa(2)">&larr; Voltar</button>
+            <button type="button" class="btn-primary" onclick="irParaEtapa(4)">Avançar para 3D e Pix &rarr;</button>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- ETAPA 4: MOCKUP 3D E FECHAMENTO PIX                                   -->
+    <!-- ===================================================================== -->
+    <div id="step-4" class="step-section">
+        <div class="grid-layout">
+            
+            <!-- COLUNA ESQUERDA: MOCKUP 3D -->
+            <div>
+                <div class="stage-3d">
+                    <div class="book-3d" id="book3d">
+                        <div class="book-face book-front" id="bookFront">
+                            <span id="previewAutor">SEU NOME AQUI</span>
+                            <h2 id="previewTitulo">O Título do Seu Livro</h2>
+                            <span style="font-size: 9px; opacity: 0.7;">EDIÇÃO INDEPENDENTE</span>
+                        </div>
+                        <div class="book-face book-spine" id="bookSpine">
+                            O TÍTULO DO SEU LIVRO
+                        </div>
+                        <div class="book-face book-back">
+                            <div>
+                                <strong>Sobre a obra:</strong><br><br>
+                                Espaço reservado para a sinopse oficial da contracapa, preparada com as margens de sangria exigidas pela gráfica.
+                            </div>
+                            <div class="barcode-box" id="barcodePreview">
+                                ||||| || |||| |||<br>
+                                ISBN 978-65-0000
+                            </div>
+                        </div>
+                        <div class="book-face book-pages"></div>
+                    </div>
+
+                    <div class="controls-3d">
+                        <button type="button" class="btn-view" onclick="girarLivro(-28, 6)">Capa</button>
+                        <button type="button" class="btn-view" onclick="girarLivro(65, 0)">Lombada</button>
+                        <button type="button" class="btn-view" onclick="girarLivro(160, 4)">Contracapa</button>
+                        <button type="button" class="btn-view" onclick="alternarRotacaoAuto()">↻ Girar 360°</button>
+                    </div>
+                </div>
+
+                <div class="section-box" style="margin-top: 15px; padding: 15px;">
+                    <h3 style="font-size: 14px; margin-bottom: 8px;">Testar Capa e Título no 3D</h3>
+                    <input type="text" id="inputTitulo" placeholder="Digite o título para simular no 3D" oninput="atualizarTextos3D()" style="margin-bottom: 8px;">
+                    <input type="file" id="uploadCapa" accept="image/*" onchange="validarEcarregarCapa(event)" style="font-size: 12px;">
+                    <div id="statusDpi" class="dpi-status">
+                        ✓ Pronto para receber arte ou criar capa profissional.
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUNA DIREITA: RESUMO E PIX -->
+            <div>
+                <div class="section-box" style="padding: 18px;">
+                    <h3 style="font-size: 15px; margin-bottom: 10px;">Resumo Técnico Validado</h3>
+                    <ul id="listaResumoFinal" style="font-size: 13px; padding-left: 18px; line-height: 1.7; color: #475569; margin: 0;">
+                        <!-- Preenchido dinamicamente pelo JS -->
+                    </ul>
+                </div>
+
+                <div class="pix-box">
+                    <span style="font-size: 12px; font-weight: 700; color: #0f766e;">PAGAMENTO ÚNICO VIA PIX (CHAVE E-MAIL)</span>
+                    <div class="pix-value" id="valorFinalPix">R$ 49,90</div>
+                    <p style="font-size: 12px; color: #475569; margin: 0;">
+                        Chave Pix: <strong>voamaisdesign@gmail.com</strong>
+                    </p>
+
+                    <input type="text" id="pixCopiaCola" class="pix-code-input" readonly value="voamaisdesign@gmail.com">
+                    
+                    <button type="button" class="btn-pix" onclick="copiarPix()">📋 Copiar Chave Pix (E-mail)</button>
+                </div>
+
+                <a id="linkWhatsappFinal" href="#" target="_blank" class="btn-whatsapp">
+                    Enviar Comprovante e Arquivo no WhatsApp &rarr;
+                </a>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button type="button" class="btn-secondary" onclick="irParaEtapa(3)">&larr; Voltar e Ajustar Serviços</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const PRECO_BASE = 49.90;
+    const SEU_WHATSAPP = "5551984223793"; // Seu WhatsApp real configurado
+    let girando = false;
+    let intervaloGiro = null;
+    let anguloAtual = -28;
+
+    // NAVEGAÇÃO ENTRE ETAPAS
+    function irParaEtapa(numeroEtapa) {
+        if (numeroEtapa === 2) {
+            const status = document.querySelector('input[name="statusLivro"]:checked').value;
+            if (status === 'nao' || status === 'escrevendo') {
+                alert('Recomendamos estruturar sua obra com o Gemini antes de avançar para a diagramação.');
+                return;
+            }
+        }
+
+        // Esconde todas as seções e ativa a desejada
+        document.querySelectorAll('.step-section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(`step-${numeroEtapa}`).classList.add('active');
+
+        // Atualiza indicadores visuais no topo
+        for (let i = 1; i <= 4; i++) {
+            const ind = document.getElementById(`ind-step-${i}`);
+            ind.classList.remove('active', 'completed');
+            if (i < numeroEtapa) ind.classList.add('completed');
+            if (i === numeroEtapa) ind.classList.add('active');
+        }
+
+        // Gatilhos específicos ao entrar em cada etapa
+        if (numeroEtapa === 3) sincronizarRegraComercial();
+        if (numeroEtapa === 4) prepararResumoFinal();
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // LÓGICA ETAPA 1
+    function tratarStatusLivro() {
+        const status = document.querySelector('input[name="statusLivro"]:checked').value;
+        const aiBridge = document.getElementById('aiBridgeContainer');
+        const blocoObjetivo = document.getElementById('blocoObjetivo');
+        const blocoEntrada = document.getElementById('blocoEntrada');
+
+        if (status === 'nao' || status === 'escrevendo') {
+            aiBridge.classList.remove('hidden');
+            blocoObjetivo.style.opacity = '0.5';
+            blocoEntrada.style.opacity = '0.5';
+        } else {
+            aiBridge.classList.add('hidden');
+            blocoObjetivo.style.opacity = '1';
+            blocoEntrada.style.opacity = '1';
+        }
+    }
+
+    function tratarObjetivo() {
+        const objetivo = document.querySelector('input[name="objetivo"]:checked').value;
+        const avisoPessoal = document.getElementById('avisoPessoalStep1');
+        if (objetivo === 'pessoal') {
+            avisoPessoal.classList.remove('hidden');
+        } else {
+            avisoPessoal.classList.add('hidden');
+        }
+    }
+
+    function tratarEntrada() {
+        const tipo = document.querySelector('input[name="tipoEntrada"]:checked').value;
+        document.getElementById('uploadContainer').classList.toggle('hidden', tipo !== 'docx');
+        document.getElementById('editorContainer').classList.toggle('hidden', tipo !== 'direto');
+    }
+
+    // LÓGICA ETAPA 2
+    function calcularLombada() {
+        const paginas = parseInt(document.getElementById('qtdPaginas').value) || 0;
+        const tipoPapel = document.getElementById('tipoPapel').value;
+        
+        let fator = 0.06; // Pólen 80g
+        if (tipoPapel === 'offset75') fator = 0.055;
+        if (tipoPapel === 'offset90') fator = 0.07;
+
+        const espessuraMm = (paginas * fator).toFixed(1);
+        document.getElementById('resultadoLombada').innerText = `Espessura da Lombada Calculada: ${espessuraMm} mm`;
+        return espessuraMm;
+    }
+
+    function atualizarPreviewFonte() {
+        const fonte = document.getElementById('familiaFonte').value;
+        document.getElementById('previewTexto').style.fontFamily = fonte;
+    }
+
+    // LÓGICA ETAPA 3
+    function sincronizarRegraComercial() {
+        const objetivo = document.querySelector('input[name="objetivo"]:checked').value;
+        const boxesComerciais = document.querySelectorAll('.comercial-only');
+        const aviso = document.getElementById('avisoBloqueioStep3');
+        const barcode = document.getElementById('barcodePreview');
+
+        if (objetivo === 'pessoal') {
+            aviso.classList.remove('hidden');
+            barcode.style.visibility = 'hidden';
+            boxesComerciais.forEach(box => {
+                box.classList.add('disabled');
+                const chk = box.querySelector('input[type="checkbox"]');
+                if (chk) chk.checked = false;
+            });
+        } else {
+            aviso.classList.add('hidden');
+            barcode.style.visibility = 'visible';
+            boxesComerciais.forEach(box => box.classList.remove('disabled'));
+        }
+        calcularTotal();
+    }
+
+    function calcularTotal() {
+        let total = PRECO_BASE;
+        document.querySelectorAll('.addon-check:checked').forEach(item => {
+            total += parseFloat(item.getAttribute('data-preco'));
+        });
+
+        const formatado = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        document.getElementById('valorTotalStep3').innerText = formatado;
+        document.getElementById('valorFinalPix').innerText = formatado;
+        return formatado;
+    }
+
+    function abrirTutorial(tema) {
+        const titulos = {
+            'capa': 'Como preparar sua capa nas medidas exatas e 300 DPI',
+            'ficha': 'Como solicitar ou montar sua Ficha Catalográfica',
+            'isbn': 'Passo a passo para tirar seu ISBN na Câmara Brasileira do Livro'
+        };
+        alert(`🎬 Vídeo Tutorial Gratuito:
+"${titulos[tema]}"
+
+(Insira aqui o link do seu vídeo no YouTube.)`);
+    }
+
+    // LÓGICA ETAPA 4 (RESUMO, 3D E PIX)
+    function prepararResumoFinal() {
+        const objetivo = document.querySelector('input[name="objetivo"]:checked').value === 'comercial' ? 'Uso Comercial' : 'Uso Pessoal';
+        const formato = document.getElementById('formatoLivro').value;
+        const papelSelect = document.getElementById('tipoPapel');
+        const papelTexto = papelSelect.options[papelSelect.selectedIndex].text.split(' (')[0];
+        const lombada = calcularLombada();
+        const sumario = document.getElementById('chkSumario').checked ? 'Sim' : 'Não';
+        const valorFormatado = calcularTotal();
+
+        const extras = [];
+        document.querySelectorAll('.addon-check:checked').forEach(item => {
+            extras.push(item.getAttribute('data-nome'));
+        });
+        const textoExtras = extras.length > 0 ? extras.join(', ') : 'Nenhum adicional';
+
+        // Atualiza lista na tela
+        document.getElementById('listaResumoFinal').innerHTML = `
+            <li><strong>Modalidade:</strong> ${objetivo}</li>
+            <li><strong>Formato e Papel:</strong> ${formato} • ${papelTexto}</li>
+            <li><strong>Lombada Calculada:</strong> ${lombada} mm</li>
+            <li><strong>Índice Automático:</strong> ${sumario}</li>
+            <li><strong>Adicionais:</strong> ${textoExtras}</li>
+        `;
+
+        // Atualiza link do WhatsApp com o pedido mastigado
+        const msgZap = encodeURIComponent(
+            `Olá! Acabei de fechar meu projeto no *LivroPronto.app.br*:
+` +
+            `• Modalidade: ${objetivo}
+` +
+            `• Formato: ${formato} (${papelTexto})
+` +
+            `• Lombada: ${lombada} mm
+` +
+            `• Adicionais: ${textoExtras}
+` +
+            `• Total Pix: ${valorFormatado}
+
+` +
+            `Estou enviando o comprovante e o arquivo do livro!`
+        );
+        document.getElementById('linkWhatsappFinal').href = `https://wa.me/${SEU_WHATSAPP}?text=${msgZap}`;
+    }
+
+    function girarLivro(y, x) {
+        pararGiroAuto();
+        document.getElementById('book3d').style.transform = `rotateY(${y}deg) rotateX(${x}deg)`;
+    }
+
+    function alternarRotacaoAuto() {
+        if (girando) {
+            pararGiroAuto();
+        } else {
+            girando = true;
+            const book = document.getElementById('book3d');
+            book.style.transition = 'none';
+            intervaloGiro = setInterval(() => {
+                anguloAtual = (anguloAtual + 1) % 360;
+                book.style.transform = `rotateY(${anguloAtual}deg) rotateX(5deg)`;
+            }, 30);
+        }
+    }
+
+    function pararGiroAuto() {
+        girando = false;
+        clearInterval(intervaloGiro);
+        document.getElementById('book3d').style.transition = 'transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)';
+    }
+
+    function atualizarTextos3D() {
+        const titulo = document.getElementById('inputTitulo').value || 'O Título do Seu Livro';
+        document.getElementById('previewTitulo').innerText = titulo;
+        document.getElementById('bookSpine').innerText = titulo.toUpperCase();
+    }
+
+    function validarEcarregarCapa(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const front = document.getElementById('bookFront');
+                front.style.backgroundImage = `url(${e.target.result})`;
+                document.getElementById('previewTitulo').style.display = 'none';
+                document.getElementById('previewAutor').style.display = 'none';
+
+                const statusDiv = document.getElementById('statusDpi');
+                if (img.width < 1500 || img.height < 2200) {
+                    statusDiv.className = 'dpi-status warning';
+                    statusDiv.innerHTML = `⚠️ <strong>Atenção (${img.width}x${img.height}px):</strong> Resolução abaixo de 300 DPI. Aplicaremos <strong>Upscale por IA</strong> automaticamente para evitar pixels estourados.`;
+                } else {
+                    statusDiv.className = 'dpi-status';
+                    statusDiv.innerHTML = `✓ <strong>Excelente (${img.width}x${img.height}px):</strong> Imagem em alta resolução pronta para 300 DPI.`;
+                }
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function copiarPix() {
+        const inputPix = document.getElementById('pixCopiaCola');
+        inputPix.select();
+        inputPix.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(inputPix.value);
+        alert('✅ Chave Pix (voamaisdesign@gmail.com) copiada com sucesso!');
+    }
+
+    window.onload = function() {
+        calcularLombada();
+    };
+</script>
+
+</body>
+</html>
