@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LivroPronto.app.br - Publicação e Diagramação Inteligente</title>
+    <!-- Importando a fonte Ubuntu do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #0f172a;
@@ -549,13 +551,13 @@
     </div>
 
     <!-- ===================================================================== -->
-    <!-- ETAPA 1: FUNIL INICIAL                                                -->
+    <!-- ETAPA 1: FUNIL INICIAL (TODOS DESMARCADOS POR PADRÃO)                 -->
     <!-- ===================================================================== -->
     <div id="step-1" class="step-section active">
         <div class="section-box">
             <h3>1. O seu livro já está escrito?</h3>
             <label class="radio-label">
-                <input type="radio" name="statusLivro" value="sim" checked onclick="tratarStatusLivro()"> 
+                <input type="radio" name="statusLivro" value="sim" onclick="tratarStatusLivro()"> 
                 Sim, já tenho o texto pronto (.docx ou digitação)
             </label>
             <label class="radio-label">
@@ -577,7 +579,7 @@
         <div class="section-box" id="blocoObjetivo">
             <h3>2. Qual é o objetivo deste livro?</h3>
             <label class="radio-label">
-                <input type="radio" name="objetivo" value="comercial" checked onclick="tratarObjetivo()"> 
+                <input type="radio" name="objetivo" value="comercial" onclick="tratarObjetivo()"> 
                 <strong>Uso Comercial</strong> (Quero vender, distribuir em livrarias, Clube de Autores, UICLAP ou Amazon)
             </label>
             <label class="radio-label">
@@ -593,7 +595,7 @@
         <div class="section-box" id="blocoEntrada">
             <h3>3. Como você quer inserir o seu texto?</h3>
             <label class="radio-label">
-                <input type="radio" name="tipoEntrada" value="docx" checked onclick="tratarEntrada()"> 
+                <input type="radio" name="tipoEntrada" value="docx" onclick="tratarEntrada()"> 
                 Fazer upload de arquivo Word (.docx)
             </label>
             <label class="radio-label">
@@ -601,7 +603,7 @@
                 Digitar ou colar o texto diretamente no app
             </label>
 
-            <div id="uploadContainer" style="margin-top: 10px;">
+            <div id="uploadContainer" style="margin-top: 10px;" class="hidden">
                 <input type="file" id="arquivoDocx" accept=".docx">
             </div>
 
@@ -652,7 +654,7 @@
                 <option value="Georgia, serif">Georgia (Com serifa - Clássica e Elegante)</option>
                 <option value="'Times New Roman', serif">Times New Roman (Com serifa - Tradicional)</option>
                 <option value="Arial, sans-serif">Arial (Sem serifa - Moderna e Limpa)</option>
-                <option value="'Courier New', monospace">Courier New (Monoespacial - Estilo Máquina)</option>
+                <option value="'Ubuntu', sans-serif">Ubuntu (Sem serifa - Contemporânea e Sofisticada)</option>
             </select>
 
             <label>Prévia de Visualização em Tempo Real:</label>
@@ -668,7 +670,7 @@
     </div>
 
     <!-- ===================================================================== -->
-    <!-- ETAPA 3: ADD-ONS E TUTORIAIS                                          -->
+    <!-- ETAPA 3: ADD-ONS E TUTORIAIS (TODOS DESMARCADOS)                       -->
     <!-- ===================================================================== -->
     <div id="step-3" class="step-section">
         <div id="avisoBloqueioStep3" class="alert-box hidden">
@@ -688,7 +690,7 @@
             </p>
             <div style="margin-left: 24px; margin-top: 8px;">
                 <label style="font-size: 13px; cursor: pointer; font-weight: 600; color: var(--accent-color);">
-                    <input type="checkbox" id="chkSumario" checked> 
+                    <input type="checkbox" id="chkSumario"> 
                     Gerar Índice / Sumário Automático com paginação exata
                 </label>
             </div>
@@ -849,10 +851,19 @@
     let intervaloGiro = null;
     let anguloAtual = -28;
 
-    // NAVEGAÇÃO ENTRE ETAPAS
+    // NAVEGAÇÃO ENTRE ETAPAS COM VALIDAÇÃO DE PREENCHIMENTO
     function irParaEtapa(numeroEtapa) {
         if (numeroEtapa === 2) {
-            const status = document.querySelector('input[name="statusLivro"]:checked').value;
+            const statusSelecionado = document.querySelector('input[name="statusLivro"]:checked');
+            const objetivoSelecionado = document.querySelector('input[name="objetivo"]:checked');
+            const entradaSelecionada = document.querySelector('input[name="tipoEntrada"]:checked');
+
+            if (!statusSelecionado || !objetivoSelecionado || !entradaSelecionada) {
+                alert('Por favor, responda às opções da etapa anterior antes de avançar.');
+                return;
+            }
+
+            const status = statusSelecionado.value;
             if (status === 'nao' || status === 'escrevendo') {
                 alert('Recomendamos estruturar sua obra com o Gemini antes de avançar para a diagramação.');
                 return;
@@ -933,7 +944,8 @@
 
     // LÓGICA ETAPA 3
     function sincronizarRegraComercial() {
-        const objetivo = document.querySelector('input[name="objetivo"]:checked').value;
+        const objRadio = document.querySelector('input[name="objetivo"]:checked');
+        const objetivo = objRadio ? objRadio.value : 'comercial';
         const boxesComerciais = document.querySelectorAll('.comercial-only');
         const aviso = document.getElementById('avisoBloqueioStep3');
         const barcode = document.getElementById('barcodePreview');
@@ -972,15 +984,13 @@
             'ficha': 'Como solicitar ou montar sua Ficha Catalográfica',
             'isbn': 'Passo a passo para tirar seu ISBN na Câmara Brasileira do Livro'
         };
-        alert(`🎬 Vídeo Tutorial Gratuito:
-"${titulos[tema]}"
-
-(Insira aqui o link do seu vídeo no YouTube.)`);
+        alert(`🎬 Vídeo Tutorial Gratuito:\n"${titulos[tema]}"\n\n(Insira aqui o link do seu vídeo no YouTube.)`);
     }
 
     // LÓGICA ETAPA 4 (RESUMO, 3D E PIX)
     function prepararResumoFinal() {
-        const objetivo = document.querySelector('input[name="objetivo"]:checked').value === 'comercial' ? 'Uso Comercial' : 'Uso Pessoal';
+        const objRadio = document.querySelector('input[name="objetivo"]:checked');
+        const objetivo = (objRadio && objRadio.value === 'pessoal') ? 'Uso Pessoal' : 'Uso Comercial';
         const formato = document.getElementById('formatoLivro').value;
         const papelSelect = document.getElementById('tipoPapel');
         const papelTexto = papelSelect.options[papelSelect.selectedIndex].text.split(' (')[0];
@@ -1005,19 +1015,12 @@
 
         // Atualiza link do WhatsApp com o pedido mastigado
         const msgZap = encodeURIComponent(
-            `Olá! Acabei de fechar meu projeto no *LivroPronto.app.br*:
-` +
-            `• Modalidade: ${objetivo}
-` +
-            `• Formato: ${formato} (${papelTexto})
-` +
-            `• Lombada: ${lombada} mm
-` +
-            `• Adicionais: ${textoExtras}
-` +
-            `• Total Pix: ${valorFormatado}
-
-` +
+            `Olá! Acabei de fechar meu projeto no *LivroPronto.app.br*:\n` +
+            `• Modalidade: ${objetivo}\n` +
+            `• Formato: ${formato} (${papelTexto})\n` +
+            `• Lombada: ${lombada} mm\n` +
+            `• Adicionais: ${textoExtras}\n` +
+            `• Total Pix: ${valorFormatado}\n\n` +
             `Estou enviando o comprovante e o arquivo do livro!`
         );
         document.getElementById('linkWhatsappFinal').href = `https://wa.me/${SEU_WHATSAPP}?text=${msgZap}`;
